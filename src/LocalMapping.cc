@@ -625,7 +625,12 @@ void LocalMapping::CreateNewMapPoints()
                     continue;
 
                 // Euclidean coordinates
-                x3D = x3D_h.get_minor<3,1>(0,0) / x3D_h(3);
+                // x3D = x3D_h.get_minor<3,1>(0,0) / x3D_h(3);
+                x3D = x3D_h.get_minor<3,1>(0,0) * (1/x3D_h(3));
+
+                // /usr/local/home/cyan3/Dev/jim/mb/ORB_SLAM3/src/LocalMapping.cc:628:49: error: no match for 'operator/' (operand types are 'cv::Matx<float, 3, 1>' and 'float')
+
+
                 bEstimated = true;
 
             }

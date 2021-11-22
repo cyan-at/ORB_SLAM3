@@ -169,7 +169,8 @@ void Viewer::Run()
     Ow.SetIdentity();
     pangolin::OpenGlMatrix Twwp; // Oriented with g in the z axis, but y and x from camera
     Twwp.SetIdentity();
-    cv::namedWindow("ORB-SLAM3: Current Frame");
+    cv::namedWindow("ORB-SLAM3: Current Frame", 0);
+    cv::resizeWindow("ORB-SLAM3: Current Frame", 960,540);
 
     bool bFollow = true;
     bool bLocalizationMode = false;

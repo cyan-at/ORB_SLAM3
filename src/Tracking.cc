@@ -1685,7 +1685,8 @@ void Tracking::Track()
         }
         else if(mCurrentFrame.mTimeStamp>mLastFrame.mTimeStamp+1.0)
         {
-            cout << "id last: " << mLastFrame.mnId << "    id curr: " << mCurrentFrame.mnId << endl;
+            cout << "id last: " << mLastFrame.mnId << "    id curr: " << mCurrentFrame.mnId;
+            cout << "a: " << mLastFrame.mTimeStamp << "    b: " << mCurrentFrame.mTimeStamp << endl;
             if(mpAtlas->isInertial())
             {
 
