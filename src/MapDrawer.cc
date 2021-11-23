@@ -153,10 +153,28 @@ void MapDrawer::DrawMapPoints()
             continue;
         cv::Mat pos = (*sit)->GetWorldPos();
         glVertex3f(pos.at<float>(0),pos.at<float>(1),pos.at<float>(2));
-
     }
 
     glEnd();
+}
+
+void MapDrawer::PrintReferenceMapPoints(FILE* fp) {
+    unsigned long now = std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::system_clock::now().time_since_epoch()).count();
+    fprintf(fp, "rmp @ %lu\n", now);
+
+    const vector<MapPoint*> &vpRefMPs = mpAtlas->GetReferenceMapPoints();
+    set<MapPoint*> spRefMPs(vpRefMPs.begin(), vpRefMPs.end());
+    for(set<MapPoint*>::iterator sit=spRefMPs.begin(), send=spRefMPs.end(); sit!=send; sit++)
+    {
+        if((*sit)->isBad())
+            continue;
+        cv::Mat pos = (*sit)->GetWorldPos();
+        fprintf(fp, "rmp: %.3f, %.3f, %.3f\n",
+            pos.at<float>(0),pos.at<float>(1),pos.at<float>(2));
+    }
+
+    fflush(fp);
 }
 
 void MapDrawer::DrawKeyFrames(const bool bDrawKF, const bool bDrawGraph, const bool bDrawInertialGraph)
@@ -399,6 +417,30 @@ void MapDrawer::SetCurrentCameraPose(const cv::Mat &Tcw)
 {
     unique_lock<mutex> lock(mMutexCamera);
     mCameraPose = Tcw.clone();
+}
+
+void MapDrawer::PrintCurrentCameraPose(FILE* fp)
+{
+    unique_lock<mutex> lock(mMutexCamera);
+
+    cv::Mat Rwc = mCameraPose.rowRange(0,3).colRange(0,3).t();
+    cv::Mat twc = -Rwc*mCameraPose.rowRange(0,3).col(3);
+    vector<float> q = Converter::toQuaternion(Rwc);
+
+    unsigned long now = std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::system_clock::now().time_since_epoch()).count();
+
+    fprintf(fp, "%lu; %.3f, %.3f, %.3f; %.3f, %.3f, %.3f, %.3f\n",
+        now,
+        twc.at<float>(0),
+        twc.at<float>(1),
+        twc.at<float>(2),
+        q[0],
+        q[1],
+        q[2],
+        q[3]
+        );
+    fflush(fp);
 }
 
 void MapDrawer::GetCurrentOpenGLCameraMatrix(pangolin::OpenGlMatrix &M, pangolin::OpenGlMatrix &MOw)

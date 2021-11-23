@@ -27,6 +27,11 @@
 
 #include<mutex>
 
+#include "Converter.h"
+#include <chrono>
+#include <stdio.h>
+#include <stdlib.h>
+
 namespace ORB_SLAM3
 {
 
@@ -38,9 +43,15 @@ public:
     Atlas* mpAtlas;
 
     void DrawMapPoints();
+    void PrintReferenceMapPoints(FILE* fp);
+
     void DrawKeyFrames(const bool bDrawKF, const bool bDrawGraph, const bool bDrawInertialGraph);
+
     void DrawCurrentCamera(pangolin::OpenGlMatrix &Twc);
+
     void SetCurrentCameraPose(const cv::Mat &Tcw);
+    void PrintCurrentCameraPose(FILE* fp);
+
     void SetReferenceKeyFrame(KeyFrame *pKF);
     void GetCurrentOpenGLCameraMatrix(pangolin::OpenGlMatrix &M, pangolin::OpenGlMatrix &MOw);
     void GetCurrentOpenGLCameraMatrix(pangolin::OpenGlMatrix &M, pangolin::OpenGlMatrix &MOw, pangolin::OpenGlMatrix &MTwwp);
